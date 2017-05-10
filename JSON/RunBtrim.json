@@ -1,0 +1,11 @@
+{
+  "name" : "Btrim",
+  "appId" : "btrim-0.0.0",
+  "archive" : false,
+  "inputs": {
+    "sequence_file" :  "http://de.cyverse.org/dl/d/80CACD67-05A8-4234-9450-20458B19DB9A/1.fastq"
+  },
+  "parameters" : {
+    "failed_reads": true
+  }
+}
