@@ -1,0 +1,274 @@
+{
+  "name": "btrim",
+  "label": "btrim 0.3.0",
+  "shortDescription": "Fast and lightweight to trim reads.",
+  "longDescription": "Btrim is a fast and lightweight tool to trim adapters and low quality regions in reads from ultra high-throughput next-generation sequencing machines. It was used in the largest genetic sequencing study of human diseases (Nature, 2013, 498, 232-235: 'Negligible impact of rare autoimmune-locus coding-region variants on missing heritability').",
+  "helpURI": "http://www.sciencedirect.com/science/article/pii/S0888754311001339",
+  "datePublished": "",
+  "author":"Alice Minotto",
+  "version": "0.0.0",
+  "deploymentSystem": "cyverseUK-Storage2",
+  "deploymentPath": "/mnt/data/apps/btrim",
+  "executionSystem": "cyverseUK-Batch2",
+  "executionType": "CLI",
+  "parallelism": "SERIAL",
+  "templatePath": "wrapper.sh",
+  "testPath": "test.sh",
+  "ontology": [ "http://edamontology.org/operation_0369",
+    "http://edamontology.org/operation_2121",
+    "http://edamontology.org/operation_3695" ],
+  "tags": [ "CyverseUK" ],
+  "inputs": [
+    {"id": "sequence_file",
+    "value": {
+      "required": true,
+      "default": ""
+    },
+    "details": {
+      "label": "FASTQ file to be trimmed",
+      "showArgument": false
+    },
+    "semantics": {
+      "maxCardinality": 1
+    }},
+    {"id": "pattern_file",
+    "value": {
+      "required": false,
+      "default": ""
+      },
+    "details": { "label": "Pattern File",
+      "description": "Each line contains one pair of 5'- and 3'- adaptors; ignored if quality trimming in effect.",
+      "showArgument": false
+    },
+    "semantics": {
+      "maxCardinality": 1
+      }}
+    ],
+
+
+  "parameters": [
+    {"id": "quality_trimming",
+    "value": {
+      "type": "flag",
+      "visible": true
+      },
+    "details": {
+      "label": "Quality trimming",
+      "description": "Default is adaptator trimming",
+      "showArgument": true,
+      "argument": "-q "
+      }},
+    {"id": "3only",
+      "value": {
+        "type": "flag",
+        "visible": true
+      },
+      "details": {
+        "label": "3' only",
+        "description": "3'- adaptor trimming only",
+        "showArgument": true,
+        "argument": "-3 "
+      }
+    },
+    {"id": "pass",
+      "value": {
+        "type": "flag",
+        "visible": true
+      },
+      "details": {
+        "label": "Pass if no adaptor found",
+        "showArgument": true,
+        "argument": "-P "
+      }
+    },
+    {"id": "always_quality",
+      "value": {
+        "type": "flag",
+        "visible": true
+      },
+      "details": {
+        "label": "Force quality trimming even if adaptor is found",
+        "showArgument": true,
+        "argument": "-Q "
+      }
+    },
+    {"id": "max5error",
+      "value": {
+        "type": "number",
+        "visible": true,
+        "default": 3,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Max errors at 5' adaptor",
+        "showArgument": true,
+        "argument": "-u "
+      }
+    },
+    {"id": "max3error",
+      "value": {
+        "type": "number",
+        "visible": true,
+        "default": 4,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "Max errors at 3' adaptor",
+        "showArgument": true,
+        "argument": "-v "
+      }
+    },
+    {"id": "minimal_length",
+      "value": {
+        "type": "number",
+        "default": 25,
+        "validator": "^[0-9]*$",
+        "visible": true
+      },
+      "details": {
+        "label": "Minimal insert size",
+        "showArgument": true,
+        "argument": "-l "
+      }
+    },
+    {"id": "5range",
+      "value": {
+        "type": "string",
+        "visible": true,
+        "validator": "^[0-9]*$"
+      },
+      "details": {
+        "label": "5' range",
+        "description": "The length of sequence to look for 5' adaptor at the beginning of the sequence [default is 1.3 x adoptor length]",
+        "showArgument": true,
+        "argument": "-b "
+      }
+    },
+    {"id": "3range",
+      "value": {
+        "type": "string",
+        "validator": "^[0-9]*$",
+        "visible": true
+      },
+      "details": {
+        "label": "3' range",
+        "description": "The starting position to look for 3'-adaptor at the end of the sequence [default is the 5'-trimming point]",
+        "showArgument": true,
+        "argument": "-e "
+      }
+    },
+    {"id": "window_size",
+      "value": {
+        "type": "number",
+        "visible": true,
+        "validator": "^[0-9]*$",
+        "default": 25
+      },
+      "details": {
+        "label": "Window size",
+        "description": "The size of moving window for quality trimming",
+        "showArgument": true,
+        "argument": "-w "
+      }
+    },
+    {"id": "average_quality",
+      "value": {
+        "type": "number",
+        "visible": true,
+        "validator": "^[0-9]*$",
+        "default": 15
+      },
+      "details": {
+        "label": "Average quality",
+        "description": "Cutoff for average quality scores within the moving window for quality trimming",
+        "showArgument": true,
+        "argument": "-a "
+      }
+    },
+    {"id": "5trim",
+      "value": {
+        "type": "number",
+        "visible": true,
+        "validator": "^[0-9]*$",
+        "default": 0
+      },
+      "details": {
+        "label": "5' trimmed bases",
+        "description": "The number of bases to be trimmed at 5' end [default none]",
+        "showArgument": true,
+        "argument": "-f "
+      }
+    },
+    {"id": "case_sensitive",
+      "value": {
+        "type": "flag",
+        "visible": true
+      },
+      "details": {
+        "label": "Case sensitive",
+        "showArgument": true,
+        "argument": "-I "
+      }
+    },
+    {"id": "check_fastq",
+      "value": {
+        "type": "flag",
+        "visible": true
+      },
+      "details": {
+        "label": "Check FASTQ file",
+        "showArgument": true,
+        "argument": "-c "
+      }
+    },
+    {"id": "phred_offset",
+      "value": {
+        "type": "enumeration",
+        "visible": true,
+        "enumValues": [
+          {"": "33"},
+          {"-i ": "64"}
+        ],
+        "default": ""
+      },
+      "details": {
+        "label": "Phred offset",
+        "showArgument": false
+      }
+    },
+    {"id": "barcode",
+      "value": {
+        "type": "flag",
+        "visible": true
+      },
+      "details": {
+        "label": "Barcode assignment",
+        "showArgument": true,
+        "argument": "-B "
+      }
+    },
+    {"id": "failed_reads",
+      "value": {
+        "type": "flag",
+        "visible": true
+      },
+      "details": {
+        "label": "Keep failed reads in another file",
+        "showArgument": true,
+        "argument": "-K failed_output "
+      }
+    },
+    {"id": "3first",
+      "value": {
+        "type": "flag",
+        "visible": true
+      },
+      "details": {
+        "label": "3'-end search first",
+        "description": "3'-end search first, then the best match's 5'-adaptor is used for 5'-end search [default is 5'-end search first]",
+        "showArgument": true,
+        "argument": "-T "
+      }
+    }
+]
+}
