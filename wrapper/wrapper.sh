@@ -26,20 +26,29 @@ echo "Arguments are " "${ARGSU}"
 
 CMDLINEARG="btrim64 ${quality_trimming} ${3only} ${pass} ${always_quality} ${max5error} ${max3error} ${minimal_length} ${5range} ${3range} ${window_size} ${average_quality} ${5trim} ${case_sensitive} ${check_fastq} ${phred_offset} ${barcode} ${failed_reads} ${3first} "
 
-if [ -n "${PATTERNFILEU}" -a -n "${quality_trimming}" ] && [ -z "${always_quality}" ]
+if [ -z "${quality_trimming}" -a -z "${pattern_file}" ]
   then
-    >&2 echo "WARNING: pattern file will be ignored in quality trimming mode"
-  else
-    CMDLINEARG+="${PATTERNFILEU} "
+    >&2 echo "Pattern file is required to remove adaptors."
+    debug
+    exit 1;
+fi
+if [ -n "${PATTERNFILEU}" ]
+  then
+    if [ -n "${quality_trimming}" -a -z "${always_quality}" ]
+      then
+        >&2 echo "WARNING: pattern file will be ignored in quality trimming mode"
+      else
+        CMDLINEARG+="-p ${PATTERNFILEU} "
+    fi
 fi
 
-CMDLINEARG+="-o output"
-echo ${CMDLINEARG};
+CMDLINEARG+="-t ${SEQUENCEFILEU} -o output"
 OUTPUTSU="output, "
 if [ -n "${failed_reads}" ]
   then
     OUTPUTSU+="failed_output"
 fi
+echo ${CMDLINEARG};
 
 chmod +x launch.sh
 
